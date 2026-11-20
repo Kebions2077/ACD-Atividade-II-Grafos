@@ -73,12 +73,10 @@ public class Grafo {
     }
 
     private void adicionarNaLista(int origem, int destino, double peso) {
-        for (Aresta aresta : lista.get(origem)) {
-            if (aresta.getDestino() == destino) {
-                lista.get(origem).remove(aresta);
-                break;
-            }
-        }
+
+        lista.get(origem).removeIf(
+                aresta -> aresta.getDestino() == destino
+        );
 
         lista.get(origem).add(new Aresta(destino, peso));
     }

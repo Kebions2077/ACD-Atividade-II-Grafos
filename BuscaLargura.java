@@ -1,10 +1,9 @@
-
 import java.util.*;
 
 public class BuscaLargura {
 
     public static void executar(Grafo grafo, int inicio) {
-        int vertices = grafo.getVertices();
+        int vertices = grafo.getNumVertices();
 
         boolean[] visitado = new boolean[vertices];
 
@@ -20,7 +19,8 @@ public class BuscaLargura {
 
             System.out.print(atual + " ");
 
-            for (int vizinho : grafo.getVizinhos(atual)) {
+            for (Aresta aresta : grafo.getAdjacentes(atual)) {
+                int vizinho = aresta.getDestino();
 
                 if (!visitado[vizinho]) {
                     visitado[vizinho] = true;
@@ -28,5 +28,6 @@ public class BuscaLargura {
                 }
             }
         }
+        System.out.println();
     }
 }

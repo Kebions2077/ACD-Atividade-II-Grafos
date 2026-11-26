@@ -1,18 +1,23 @@
-
 import java.util.*;
 
 public class OrdenacaoTopologica {
 
     public static void executar(Grafo grafo) {
 
-        int vertices = grafo.getVertices();
+        if (!grafo.isDirigido()) {
+            throw new IllegalArgumentException(
+                    "Ordenacao topologica requer grafo dirigido"
+            );
+        }
+
+        int vertices = grafo.getNumVertices();
 
         int[] grauEntrada = new int[vertices];
 
         // Calcula o grau de entrada
         for (int i = 0; i < vertices; i++) {
-            for (int vizinho : grafo.getVizinhos(i)) {
-                grauEntrada[vizinho]++;
+            for (Aresta aresta : grafo.getAdjacentes(i)) {
+                grauEntrada[aresta.getDestino()]++;
             }
         }
 
@@ -30,13 +35,13 @@ public class OrdenacaoTopologica {
         System.out.println("Ordenacao Topologica:");
 
         while (!fila.isEmpty()) {
-
             int atual = fila.poll();
 
             System.out.print(atual + " ");
             contador++;
 
-            for (int vizinho : grafo.getVizinhos(atual)) {
+            for (Aresta aresta : grafo.getAdjacentes(atual)) {
+                int vizinho = aresta.getDestino();
 
                 grauEntrada[vizinho]--;
 
@@ -46,8 +51,10 @@ public class OrdenacaoTopologica {
             }
         }
 
+        System.out.println();
+
         if (contador != vertices) {
-            System.out.println("\nO grafo possui ciclo!");
+            System.out.println("O grafo possui ciclo! Ordenacao topologica impossivel.");
         }
     }
 }

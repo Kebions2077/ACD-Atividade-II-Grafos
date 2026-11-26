@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import java.util.*;
 
 public class Kruskal {
@@ -34,10 +35,59 @@ public class Kruskal {
             if (rank[ra] < rank[rb]) { int t = ra; ra = rb; rb = t; }
             pai[rb] = ra;
             if (rank[ra] == rank[rb]) rank[ra]++;
+=======
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
+public class Kruskal {
+
+    private static class UnionFind {
+
+        private int[] pai;
+        private int[] rank;
+
+        public UnionFind(int n) {
+            pai = new int[n];
+            rank = new int[n];
+
+            for (int i = 0; i < n; i++) {
+                pai[i] = i;
+            }
+        }
+
+        public int encontrar(int x) {
+            if (pai[x] != x) {
+                pai[x] = encontrar(pai[x]);
+            }
+
+            return pai[x];
+        }
+
+        public boolean unir(int a, int b) {
+            int raizA = encontrar(a);
+            int raizB = encontrar(b);
+
+            if (raizA == raizB) {
+                return false;
+            }
+
+            if (rank[raizA] < rank[raizB]) {
+                pai[raizA] = raizB;
+            } else if (rank[raizA] > rank[raizB]) {
+                pai[raizB] = raizA;
+            } else {
+                pai[raizB] = raizA;
+                rank[raizA]++;
+            }
+
+>>>>>>> 52a304edb27b71df196b5b2b9ed6befc2e92322c
             return true;
         }
     }
 
+<<<<<<< HEAD
     /**
      * Executa Kruskal tratando o grafo como NAO-dirigido.
      * Evita duplicatas: usa apenas (u,v) com u<v, mantendo o menor peso
@@ -63,10 +113,36 @@ public class Kruskal {
                 Double atual = arestasUnicas.get(chave);
                 if (atual == null || peso < atual) {
                     arestasUnicas.put(chave, peso);
+=======
+    public static ResultadoAGM executar(Grafo grafo) {
+
+        if (grafo.isDirigido() || !grafo.isPonderado()) {
+            throw new IllegalArgumentException(
+                    "Kruskal exige grafo nao dirigido e ponderado."
+            );
+        }
+
+        int n = grafo.getNumVertices();
+
+        List<ArestaAGM> arestas = new ArrayList<>();
+
+        for (int origem = 0; origem < n; origem++) {
+            for (Aresta aresta : grafo.getAdjacentes(origem)) {
+
+                int destino = aresta.getDestino();
+
+                if (origem < destino) {
+                    arestas.add(new ArestaAGM(
+                            origem,
+                            destino,
+                            aresta.getPeso()
+                    ));
+>>>>>>> 52a304edb27b71df196b5b2b9ed6befc2e92322c
                 }
             }
         }
 
+<<<<<<< HEAD
         // Converte para lista ordenavel
         List<double[]> lista = new ArrayList<>();
         for (Map.Entry<Long, Double> e : arestasUnicas.entrySet()) {
@@ -103,3 +179,31 @@ public class Kruskal {
         return new Resultado(pesoTotal, mst);
     }
 }
+=======
+        arestas.sort(
+                Comparator.comparingDouble(ArestaAGM::getPeso)
+        );
+
+        UnionFind uf = new UnionFind(n);
+
+        List<ArestaAGM> resultado = new ArrayList<>();
+
+        for (ArestaAGM aresta : arestas) {
+
+            if (uf.unir(
+                    aresta.getOrigem(),
+                    aresta.getDestino()
+            )) {
+
+                resultado.add(aresta);
+
+                if (resultado.size() == n - 1) {
+                    break;
+                }
+            }
+        }
+
+        return new ResultadoAGM(resultado);
+    }
+}
+>>>>>>> 52a304edb27b71df196b5b2b9ed6befc2e92322c

@@ -4,6 +4,7 @@ public class Main {
 
     public static void main(String[] args) {
 
+<<<<<<< HEAD
         // ===== Demonstracao inicial com grafo pequeno =====
         Grafo grafo = new GrafoNaoDirecionado(
                 5,
@@ -52,10 +53,13 @@ public class Main {
         }
 
         // ===== Menu interativo =====
+=======
+>>>>>>> 52a304edb27b71df196b5b2b9ed6befc2e92322c
         Scanner scanner = new Scanner(System.in);
         int opcao;
 
         do {
+<<<<<<< HEAD
             System.out.println("\n===== TP2 - GRAFOS =====");
             System.out.println("1  - Testar Dijkstra");
             System.out.println("2  - Testar Bellman-Ford");
@@ -95,19 +99,95 @@ public class Main {
                     case 14 -> executarGraficos(scanner);
                     case 15 -> System.out.println("Encerrando...");
                     default -> System.out.println("Opcao invalida");
+=======
+
+            System.out.println("\n===== TP2 - GRAFOS =====");
+
+            System.out.println("1 - Testar Dijkstra");
+            System.out.println("2 - Testar Bellman-Ford");
+            System.out.println("3 - Experimento Dijkstra");
+            System.out.println("4 - Experimento Bellman-Ford");
+            System.out.println("5 - Testar Kruskal");
+            System.out.println("6 - Testar Prim");
+            System.out.println("7 - Testar Floyd-Warshall");
+            System.out.println("8 - Testar Ford-Fulkerson");
+            System.out.println("9 - Sair");
+
+            System.out.print("Escolha: ");
+
+            try {
+
+                opcao = scanner.nextInt();
+
+                switch (opcao) {
+
+                    case 1:
+                        testarAlgoritmo("Dijkstra", scanner);
+                        break;
+
+                    case 2:
+                        testarAlgoritmo("BellmanFord", scanner);
+                        break;
+
+                    case 3:
+                        executarExperimento("Dijkstra", scanner);
+                        break;
+
+                    case 4:
+                        executarExperimento("BellmanFord", scanner);
+                        break;
+
+                    case 5:
+                        testarAGM("Kruskal", scanner);
+                        break;
+
+                    case 6:
+                        testarAGM("Prim", scanner);
+                        break;
+
+                    case 7:
+                        testarFloyd(scanner);
+                        break;
+
+                    case 8:
+                        testarFordFulkerson(scanner);
+                        break;
+
+                    case 9:
+                        System.out.println("Encerrando...");
+                        break;
+
+                    default:
+                        System.out.println("Opcao invalida");
+>>>>>>> 52a304edb27b71df196b5b2b9ed6befc2e92322c
                 }
             } catch (Exception e) {
                 System.out.println("Erro: " + e.getMessage());
+
+                scanner.nextLine();
+
+                opcao = 0;
             }
 
+<<<<<<< HEAD
         } while (opcao != 15);
+=======
+        } while (opcao != 9);
+>>>>>>> 52a304edb27b71df196b5b2b9ed6befc2e92322c
 
         scanner.close();
     }
 
+<<<<<<< HEAD
     // ========================================================
     //  Metodos auxiliares
     // ========================================================
+=======
+
+    private static void testarAlgoritmo(
+            String algoritmo,
+            Scanner scanner) throws Exception {
+>>>>>>> 52a304edb27b71df196b5b2b9ed6befc2e92322c
 
     private static Grafo carregarGrafo(Scanner scanner) throws Exception {
         System.out.print("Arquivo .gr: ");
@@ -121,11 +201,16 @@ public class Main {
                         ? Grafo.Representacao.LISTA
                         : Grafo.Representacao.MATRIZ;
 
+<<<<<<< HEAD
         return GrafoLoader.carregar(arquivo, representacao);
     }
+=======
+        System.out.print("Vertice de origem (comecando em 0): ");
+>>>>>>> 52a304edb27b71df196b5b2b9ed6befc2e92322c
 
     // ---------- Caminhos minimos ----------
 
+<<<<<<< HEAD
     private static void testarAlgoritmo(
             String algoritmo,
             Scanner scanner) throws Exception {
@@ -134,6 +219,12 @@ public class Main {
 
         System.out.print("Vertice de origem (comecando em 0): ");
         int origem = Integer.parseInt(scanner.nextLine().trim());
+=======
+        Grafo grafo = GrafoLoader.carregar(
+                arquivo,
+                representacao
+        );
+>>>>>>> 52a304edb27b71df196b5b2b9ed6befc2e92322c
 
         System.out.println("\nExecutando " + algoritmo);
 
@@ -150,6 +241,7 @@ public class Main {
         }
     }
 
+<<<<<<< HEAD
     // ---------- Buscas ----------
 
     private static void testarBusca(String tipo, Scanner scanner) throws Exception {
@@ -207,6 +299,8 @@ public class Main {
     }
 
     // ---------- Experimentos ----------
+=======
+>>>>>>> 52a304edb27b71df196b5b2b9ed6befc2e92322c
 
     private static void executarExperimento(
             String algoritmo,
@@ -215,8 +309,16 @@ public class Main {
         System.out.print("Arquivo .gr: ");
         String arquivo = scanner.nextLine().trim();
 
+<<<<<<< HEAD
         System.out.print("Vertice de origem (comecando em 0): ");
         int origem = Integer.parseInt(scanner.nextLine().trim());
+=======
+        String arquivo = scanner.next();
+
+        System.out.print("Vertice de origem (comecando em 0): ");
+
+        int origem = scanner.nextInt();
+>>>>>>> 52a304edb27b71df196b5b2b9ed6befc2e92322c
 
         System.out.println("1 - Lista de adjacencia");
         System.out.println("2 - Matriz de adjacencia");
@@ -237,23 +339,39 @@ public class Main {
         );
     }
 
+<<<<<<< HEAD
     private static void executarExperimentoMST(
+=======
+
+    private static void testarAGM(
+>>>>>>> 52a304edb27b71df196b5b2b9ed6befc2e92322c
             String algoritmo,
             Scanner scanner) throws Exception {
 
         System.out.print("Arquivo .gr: ");
+<<<<<<< HEAD
         String arquivo = scanner.nextLine().trim();
 
         System.out.println("1 - Lista de adjacencia");
         System.out.println("2 - Matriz de adjacencia");
         System.out.print("Escolha: ");
         int tipo = Integer.parseInt(scanner.nextLine().trim());
+=======
+
+        String arquivo = scanner.next();
+
+        System.out.println("1 - Lista de adjacencia");
+        System.out.println("2 - Matriz de adjacencia");
+
+        int tipo = scanner.nextInt();
+>>>>>>> 52a304edb27b71df196b5b2b9ed6befc2e92322c
 
         Grafo.Representacao representacao =
                 tipo == 1
                         ? Grafo.Representacao.LISTA
                         : Grafo.Representacao.MATRIZ;
 
+<<<<<<< HEAD
         Experimento.executarConfiguracaoMST(
                 arquivo,
                 representacao,
@@ -303,3 +421,100 @@ public class Main {
         System.out.println("Graficos gerados em: " + cfg[1]);
     }
 }
+=======
+        Grafo grafo = GrafoLoader.carregar(
+                arquivo,
+                representacao
+        );
+
+        System.out.println("\nExecutando " + algoritmo);
+
+        ResultadoAGM resultado;
+
+        if (algoritmo.equals("Kruskal")) {
+            resultado = Kruskal.executar(grafo);
+        } else {
+            resultado = Prim.executar(grafo);
+        }
+
+        resultado.imprimir();
+    }
+
+
+    private static void testarFloyd(
+            Scanner scanner) throws Exception {
+
+        System.out.print("Arquivo .gr: ");
+
+        String arquivo = scanner.next();
+
+        System.out.println("1 - Lista de adjacencia");
+        System.out.println("2 - Matriz de adjacencia");
+
+        int tipo = scanner.nextInt();
+
+        Grafo.Representacao representacao =
+                tipo == 1
+                        ? Grafo.Representacao.LISTA
+                        : Grafo.Representacao.MATRIZ;
+
+        Grafo grafo = GrafoLoader.carregar(
+                arquivo,
+                representacao
+        );
+
+        System.out.println("\nExecutando Floyd-Warshall");
+
+        double[][] distancias =
+                FloydWarshall.executar(grafo);
+
+        FloydWarshall.imprimir(distancias);
+    }
+
+
+    private static void testarFordFulkerson(
+            Scanner scanner) throws Exception {
+
+        System.out.print("Arquivo .gr: ");
+
+        String arquivo = scanner.next();
+
+        System.out.println("1 - Lista de adjacencia");
+        System.out.println("2 - Matriz de adjacencia");
+
+        int tipo = scanner.nextInt();
+
+        Grafo.Representacao representacao =
+                tipo == 1
+                        ? Grafo.Representacao.LISTA
+                        : Grafo.Representacao.MATRIZ;
+
+        Grafo grafo = GrafoLoader.carregar(
+                arquivo,
+                representacao
+        );
+
+        System.out.print("Vertice de origem: ");
+
+        int origem = scanner.nextInt();
+
+        System.out.print("Vertice de destino: ");
+
+        int destino = scanner.nextInt();
+
+        System.out.println("\nExecutando Ford-Fulkerson");
+
+        FordFulkerson.Resultado resultado =
+                FordFulkerson.executar(
+                        grafo,
+                        origem,
+                        destino
+                );
+
+        System.out.println(
+                "Fluxo maximo: " +
+                        resultado.getFluxoMaximo()
+        );
+    }
+}
+>>>>>>> 52a304edb27b71df196b5b2b9ed6befc2e92322c

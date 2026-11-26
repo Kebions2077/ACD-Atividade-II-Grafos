@@ -10,8 +10,7 @@ public class Experimento {
     private static volatile double resultadoVerificacao;
 
     // ========================================================
-    //  Experimento para algoritmos de caminho minimo
-    //  (Dijkstra / Bellman-Ford)
+    //  Caminho minimo (Dijkstra / Bellman-Ford)
     // ========================================================
     public static void executarConfiguracao(
             String arquivo,
@@ -20,7 +19,7 @@ public class Experimento {
             int origem,
             String arquivoCSV) throws IOException {
 
-        Grafo grafo = GrafoLoader.carregar(arquivo, representacao);
+        Grafo grafo = GrafoLoader.carregarDigrafo(arquivo, representacao);
 
         int vertices = grafo.getNumVertices();
 
@@ -33,7 +32,6 @@ public class Experimento {
                 ? 0
                 : (double) arestas / (vertices * (vertices - 1));
 
-        // Aquecimento (warm-up para JIT)
         if (algoritmo.equalsIgnoreCase("Dijkstra")) {
             Dijkstra.executar(grafo, origem);
         } else if (algoritmo.equalsIgnoreCase("BellmanFord")) {
@@ -72,40 +70,22 @@ public class Experimento {
         }
 
         double media = soma / REPETICOES;
-
         double menor = tempos[0];
         double maior = tempos[0];
-
         for (double tempo : tempos) {
             if (tempo < menor) menor = tempo;
             if (tempo > maior) maior = tempo;
         }
 
-        salvarCSV(
-                arquivoCSV,
-                algoritmo,
-                representacao.toString(),
-                vertices,
-                arestas,
-                densidade,
-                tempos
-        );
+        salvarCSV(arquivoCSV, algoritmo, representacao.toString(),
+                vertices, arestas, densidade, tempos);
 
-        System.out.println("\nRESULTADO DO EXPERIMENTO");
-        System.out.println("Algoritmo: " + algoritmo);
-        System.out.println("Representacao: " + representacao);
-        System.out.println("Vertices: " + vertices);
-        System.out.println("Arestas: " + arestas);
-        System.out.printf("Densidade: %.2f%n", densidade);
-        System.out.printf("Media: %.6f ms%n", media);
-        System.out.printf("Menor tempo: %.6f ms%n", menor);
-        System.out.printf("Maior tempo: %.6f ms%n", maior);
-        System.out.println();
+        imprimirResumo("CAMINHO MINIMO", algoritmo, representacao,
+                vertices, arestas, densidade, media, menor, maior);
     }
 
     // ========================================================
-    //  Experimento para algoritmos de MST
-    //  (Prim / Kruskal)
+    //  MST (Prim / Kruskal) - usa ResultadoAGM
     // ========================================================
     public static void executarConfiguracaoMST(
             String arquivo,
@@ -113,7 +93,7 @@ public class Experimento {
             String algoritmo,
             String arquivoCSV) throws IOException {
 
-        Grafo grafo = GrafoLoader.carregar(arquivo, representacao);
+        Grafo grafo = GrafoLoader.carregar(arquivo, representacao); // nao dirigido
 
         int vertices = grafo.getNumVertices();
 
@@ -126,7 +106,6 @@ public class Experimento {
                 ? 0
                 : (double) arestas / (vertices * (vertices - 1));
 
-        // Aquecimento (warm-up para JIT)
         if (algoritmo.equalsIgnoreCase("Prim")) {
             Prim.executar(grafo, 0);
         } else if (algoritmo.equalsIgnoreCase("Kruskal")) {
@@ -145,9 +124,9 @@ public class Experimento {
             double pesoTotal;
 
             if (algoritmo.equalsIgnoreCase("Prim")) {
-                pesoTotal = Prim.executar(grafo, 0).pesoTotal;
+                pesoTotal = Prim.executar(grafo, 0).getPesoTotal();
             } else {
-                pesoTotal = Kruskal.executar(grafo).pesoTotal;
+                pesoTotal = Kruskal.executar(grafo).getPesoTotal();
             }
 
             long fim = System.nanoTime();
@@ -155,47 +134,28 @@ public class Experimento {
             tempos[i] = (fim - inicio) / 1_000_000.0;
             soma += tempos[i];
 
-            // Verificacao leve para o JIT nao descartar a chamada
             resultadoVerificacao += pesoTotal;
 
             System.out.printf("Execucao %d: %.6f ms%n", i + 1, tempos[i]);
         }
 
         double media = soma / REPETICOES;
-
         double menor = tempos[0];
         double maior = tempos[0];
-
         for (double tempo : tempos) {
             if (tempo < menor) menor = tempo;
             if (tempo > maior) maior = tempo;
         }
 
-        salvarCSV(
-                arquivoCSV,
-                algoritmo,
-                representacao.toString(),
-                vertices,
-                arestas,
-                densidade,
-                tempos
-        );
+        salvarCSV(arquivoCSV, algoritmo, representacao.toString(),
+                vertices, arestas, densidade, tempos);
 
-        System.out.println("\nRESULTADO DO EXPERIMENTO (MST)");
-        System.out.println("Algoritmo: " + algoritmo);
-        System.out.println("Representacao: " + representacao);
-        System.out.println("Vertices: " + vertices);
-        System.out.println("Arestas: " + arestas);
-        System.out.printf("Densidade: %.2f%n", densidade);
-        System.out.printf("Media: %.6f ms%n", media);
-        System.out.printf("Menor tempo: %.6f ms%n", menor);
-        System.out.printf("Maior tempo: %.6f ms%n", maior);
-        System.out.println();
+        imprimirResumo("MST", algoritmo, representacao,
+                vertices, arestas, densidade, media, menor, maior);
     }
 
     // ========================================================
-    //  Experimento para buscas e ordenacao topologica
-    //  (BFS / DFS / Ordenacao Topologica)
+    //  Busca (BFS / DFS / Topologica)
     // ========================================================
     public static void executarConfiguracaoBusca(
             String arquivo,
@@ -204,7 +164,11 @@ public class Experimento {
             int origem,
             String arquivoCSV) throws IOException {
 
-        Grafo grafo = GrafoLoader.carregar(arquivo, representacao);
+        boolean ehTopologica = algoritmo.equalsIgnoreCase("Topologica");
+
+        Grafo grafo = ehTopologica
+                ? GrafoLoader.carregarDigrafo(arquivo, representacao)
+                : GrafoLoader.carregar(arquivo, representacao);
 
         int vertices = grafo.getNumVertices();
 
@@ -217,7 +181,6 @@ public class Experimento {
                 ? 0
                 : (double) arestas / (vertices * (vertices - 1));
 
-        // Aquecimento
         executarBusca(grafo, algoritmo, origem);
 
         double[] tempos = new double[REPETICOES];
@@ -238,35 +201,18 @@ public class Experimento {
         }
 
         double media = soma / REPETICOES;
-
         double menor = tempos[0];
         double maior = tempos[0];
-
         for (double tempo : tempos) {
             if (tempo < menor) menor = tempo;
             if (tempo > maior) maior = tempo;
         }
 
-        salvarCSV(
-                arquivoCSV,
-                algoritmo,
-                representacao.toString(),
-                vertices,
-                arestas,
-                densidade,
-                tempos
-        );
+        salvarCSV(arquivoCSV, algoritmo, representacao.toString(),
+                vertices, arestas, densidade, tempos);
 
-        System.out.println("\nRESULTADO DO EXPERIMENTO (BUSCA)");
-        System.out.println("Algoritmo: " + algoritmo);
-        System.out.println("Representacao: " + representacao);
-        System.out.println("Vertices: " + vertices);
-        System.out.println("Arestas: " + arestas);
-        System.out.printf("Densidade: %.2f%n", densidade);
-        System.out.printf("Media: %.6f ms%n", media);
-        System.out.printf("Menor tempo: %.6f ms%n", menor);
-        System.out.printf("Maior tempo: %.6f ms%n", maior);
-        System.out.println();
+        imprimirResumo("BUSCA", algoritmo, representacao,
+                vertices, arestas, densidade, media, menor, maior);
     }
 
     private static void executarBusca(Grafo grafo, String algoritmo, int origem) {
@@ -280,9 +226,29 @@ public class Experimento {
         }
     }
 
-    // ========================================================
-    //  Gravacao do CSV
-    // ========================================================
+    private static void imprimirResumo(
+            String categoria,
+            String algoritmo,
+            Grafo.Representacao representacao,
+            int vertices,
+            int arestas,
+            double densidade,
+            double media,
+            double menor,
+            double maior) {
+
+        System.out.println("\nRESULTADO DO EXPERIMENTO (" + categoria + ")");
+        System.out.println("Algoritmo: " + algoritmo);
+        System.out.println("Representacao: " + representacao);
+        System.out.println("Vertices: " + vertices);
+        System.out.println("Arestas: " + arestas);
+        System.out.printf("Densidade: %.2f%n", densidade);
+        System.out.printf("Media: %.6f ms%n", media);
+        System.out.printf("Menor tempo: %.6f ms%n", menor);
+        System.out.printf("Maior tempo: %.6f ms%n", maior);
+        System.out.println();
+    }
+
     private static void salvarCSV(
             String arquivoCSV,
             String algoritmo,
@@ -293,9 +259,7 @@ public class Experimento {
             double[] tempos) throws IOException {
 
         File arquivo = new File(arquivoCSV);
-
         File diretorio = arquivo.getParentFile();
-
         if (diretorio != null) {
             diretorio.mkdirs();
         }
